@@ -74,7 +74,8 @@ cmd_exec_time() {
         if (($elapsed%60 != 0)); then
             elapsed_format=$elapsed_format$(($elapsed%60))"s"
         fi
-        echo "羽${elapsed_format}"
+        #echo "羽${elapsed_format}"
+        echo " ${elapsed_format}"
     fi
 }
 
