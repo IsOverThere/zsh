@@ -86,10 +86,10 @@ preexec() {
 }
 
 
-ZSH_THEME_GIT_PROMPT_PREFIX="("
+ZSH_THEME_GIT_PROMPT_PREFIX="( "
 ZSH_THEME_GIT_PROMPT_SUFFIX=")"
 #ZSH_THEME_GIT_PROMPT_DIRTY=" *"
-ZSH_THEME_GIT_PROMPT_DIRTY=" %{$FG[226]%}⚡%f"
+ZSH_THEME_GIT_PROMPT_DIRTY=" %F{yellow}⚡%f"
 ZSH_THEME_GIT_PROMPT_CLEAN=""
 
 # Output additional information about paths, repos and exec time
@@ -114,10 +114,14 @@ cmd_print_host() {
 }
 
 # Define prompts
-#   羽  力 ﲾ 
+#   羽  力 ﲾ    
 #PROMPT=$'%{\e[38;5;172m%} %{\e[38;5;242m%}U%{\e[38;5;241m%}B%{\e[38;5;240m%}U%{\e[38;5;239m%}N%{\e[38;5;238m%}T%{\e[38;5;237m%}U %{\e[38;5;31m%}%n%{\e[0m%}@%M: %{\e[38;5;255m%}%~%{\e[0m%} $(git_prompt_info) [%{\e[38;5;248m%}%w %*%{\e[0m%}] %{\e[38;5;200m%}$(cmd_exec_time)%{\e[0m%}
 #%(?.%{\e[38;5;242m%}>%{\e[38;5;241m%}>%{\e[38;5;239m%}>%{\e[38;5;238m%}>%{\e[38;5;237m%}>%{\e[38;5;236m%}>%{\e[38;5;235m%}>%{\e[0m%}.%{\e[38;5;21m%}>%{\e[38;5;20m%}>%{\e[38;5;19m%}>%{\e[38;5;18m%}>%{\e[38;5;17m%}>%{\e[0m%}'
-PROMPT='%{$FG[202]%}$(cmd_print_host) %{$FG[242]%}U%{$FG[241]%}B%{$FG[240]%}U%{$FG[239]%}N%{$FG[238]%}T%{$FG[237]%}U %{$FG[031]%}%n%f@%M: %{$FG[255]%}%~%f $(git_prompt_info) [%{$FG[248]%}%w %*%f] %{$FG[214]%}   $(cmd_exec_time)%f
+#fixed color
+#PROMPT='%{$FG[202]%}$(cmd_print_host) %{$FG[242]%}U%{$FG[241]%}B%{$FG[240]%}U%{$FG[239]%}N%{$FG[238]%}T%{$FG[237]%}U %{$FG[031]%}%n%f@%M: %{$FG[255]%}%~%f $(git_prompt_info) [%{$FG[248]%}%w %*%f] %{$FG[214]%}   $(cmd_exec_time)%f
+#%(?.%{$FG[242]%}>%{$FG[241]%}>%{$FG[239]%}>%{$FG[238]%}>%{$FG[237]%}>%{$FG[236]%}>%{$FG[235]%}>%f.%{$FG[196]%}>%{$FG[202]%}>%{$FG[208]%}>%{$FG[214]%}>%{$FG[220]%}>%{$FG[226]%}>%f'
+#for all color schemes
+PROMPT='%{$FG[202]%}$(cmd_print_host) %{$FG[242]%}U%{$FG[241]%}B%{$FG[240]%}U%{$FG[239]%}N%{$FG[238]%}T%{$FG[237]%}U %{$FG[031]%}%n%f@%M: %B%~%b $(git_prompt_info) [%{$FG[248]%}%w %*%f] %{$FG[214]%}   $(cmd_exec_time)%f
 %(?.%{$FG[242]%}>%{$FG[241]%}>%{$FG[239]%}>%{$FG[238]%}>%{$FG[237]%}>%{$FG[236]%}>%{$FG[235]%}>%f.%{$FG[196]%}>%{$FG[202]%}>%{$FG[208]%}>%{$FG[214]%}>%{$FG[220]%}>%{$FG[226]%}>%f'
 #PROMPT='%{$FG[202]%}$(cmd_print_host) %{$FG[242]%}U%{$FG[241]%}B%{$FG[240]%}U%{$FG[239]%}N%{$FG[238]%}T%{$FG[237]%}U %{$FG[031]%}%n%f@%M: %{$FG[255]%}%~%f $(git_prompt_info) [%{$FG[248]%}%w %*%f] %{$FG[214]%}   $(cmd_exec_time)%f
 #%(?.%{$FG[242]%}>%{$FG[241]%}>%{$FG[239]%}>%{$FG[238]%}>%{$FG[237]%}>%{$FG[236]%}>%{$FG[235]%}>%f.%{$FG[196]%}>%{$FG[197]%}>%{$FG[198]%}>%{$FG[199]%}>%{$FG[200]%}>%{$FG[201]%}>%f'
@@ -151,5 +155,9 @@ PROMPT='%{$FG[202]%}$(cmd_print_host) %{$FG[242]%}U%{$FG[241]%}B%{$FG[240]%}U%{$
 # %n => username
 # %m => shortname host
 # %(?..) => prompt conditional - %(condition.true.false)
+#
+#  %B - %b bold start to end
+#  %U - %u underline start to end
+#  $fg_bold[color]
 #
 # ------------------------------------------------------------------------------
