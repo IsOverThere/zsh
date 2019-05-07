@@ -97,9 +97,10 @@ preexec() {
 ZSH_THEME_GIT_PROMPT_PREFIX="( "
 ZSH_THEME_GIT_PROMPT_SUFFIX=")"
 ZSH_THEME_GIT_PROMPT_CLEAN=""
-ZSH_THEME_GIT_PROMPT_AHEAD="%{$FG[051]%}▴%{$reset_color%}"
-ZSH_THEME_GIT_PROMPT_BEHIND="%{$FG[201]%}▾%{$reset_color%}"
+ZSH_THEME_GIT_PROMPT_AHEAD="%{$FG[051]%}%{$reset_color%}"
+ZSH_THEME_GIT_PROMPT_BEHIND="%{$FG[201]%}%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_STAGED="%{$FG[040]%}●%{$reset_color%}"
+ZSH_THEME_GIT_PROMPT_UNSTAGED_ONLY="%{$FG[226]%}⚡%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_UNSTAGED="%{$FG[226]%}●%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$FG[160]%}●%{$reset_color%}"
 
@@ -145,6 +146,10 @@ bureau_git_status() {
 
   if $(command git rev-parse --verify refs/stash &> /dev/null); then
     _STATUS="$_STATUS$ZSH_THEME_GIT_PROMPT_STASHED"
+  fi
+
+  if [ "${_STATUS}"x = "${ZSH_THEME_GIT_PROMPT_UNSTAGED}"x ]; then
+    _STATUS="$ZSH_THEME_GIT_PROMPT_UNSTAGED_ONLY"
   fi
 
   echo $_STATUS
