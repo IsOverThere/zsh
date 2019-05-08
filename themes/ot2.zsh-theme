@@ -103,6 +103,7 @@ ZSH_THEME_GIT_PROMPT_STAGED="%{$FG[040]%}●%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_UNSTAGED_ONLY="%{$FG[226]%}⚡%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_UNSTAGED="%{$FG[226]%}●%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$FG[160]%}●%{$reset_color%}"
+FLAGS='--ignore-submodules=dirty'
 
 bureau_git_branch () {
   ref=$(command git symbolic-ref HEAD 2> /dev/null) || \
@@ -114,7 +115,7 @@ bureau_git_status() {
   _STATUS=""
 
   # check status of files
-  _INDEX=$(command git status --porcelain 2> /dev/null)
+  _INDEX=$(command git status ${FLAGS} --porcelain 2> /dev/null)
   if [[ -n "$_INDEX" ]]; then
     if $(echo "$_INDEX" | command grep -q '^[AMRD]. '); then
       _STATUS="$_STATUS$ZSH_THEME_GIT_PROMPT_STAGED"
@@ -133,7 +134,7 @@ bureau_git_status() {
   fi
 
   # check status of local repository
-  _INDEX=$(command git status --porcelain -b 2> /dev/null)
+  _INDEX=$(command git status ${FLAGS} --porcelain -b 2> /dev/null)
   if $(echo "$_INDEX" | command grep -q '^## .*ahead'); then
     _STATUS="$_STATUS$ZSH_THEME_GIT_PROMPT_AHEAD"
   fi
