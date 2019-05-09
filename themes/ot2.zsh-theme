@@ -94,16 +94,20 @@ preexec() {
 #ZSH_THEME_GIT_PROMPT_STAGED="%{$fg_bold[green]%}●%{$reset_color%}"
 #ZSH_THEME_GIT_PROMPT_UNSTAGED="%{$fg_bold[yellow]%}●%{$reset_color%}"
 #ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg_bold[red]%}●%{$reset_color%}"
+#
+
+#  ●                      
+local DIRTY_STRING=""
 ZSH_THEME_GIT_PROMPT_PREFIX="( "
 ZSH_THEME_GIT_PROMPT_SUFFIX=")"
 ZSH_THEME_GIT_PROMPT_CLEAN=""
-ZSH_THEME_GIT_PROMPT_AHEAD="%{$FG[051]%}%{$reset_color%}"
-ZSH_THEME_GIT_PROMPT_BEHIND="%{$FG[201]%}%{$reset_color%}"
-ZSH_THEME_GIT_PROMPT_STAGED="%{$FG[040]%}●%{$reset_color%}"
+ZSH_THEME_GIT_PROMPT_AHEAD="%{$FG[039]%}%{$reset_color%}"
+ZSH_THEME_GIT_PROMPT_BEHIND="%{$FG[165]%}%{$reset_color%}"
+ZSH_THEME_GIT_PROMPT_STAGED="%{$FG[040]%}${DIRTY_STRING}%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_UNSTAGED_ONLY="%{$FG[226]%}⚡%{$reset_color%}"
-ZSH_THEME_GIT_PROMPT_UNSTAGED="%{$FG[226]%}●%{$reset_color%}"
-ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$FG[160]%}●%{$reset_color%}"
-FLAGS='--ignore-submodules=dirty'
+ZSH_THEME_GIT_PROMPT_UNSTAGED="%{$FG[226]%}${DIRTY_STRING}%{$reset_color%}"
+ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$FG[160]%}${DIRTY_STRING}%{$reset_color%}"
+local FLAGS='--ignore-submodules=dirty'
 
 bureau_git_branch () {
   ref=$(command git symbolic-ref HEAD 2> /dev/null) || \
@@ -159,6 +163,8 @@ bureau_git_status() {
 bureau_git_prompt () {
   local _branch=$(bureau_git_branch)
   local _status=$(bureau_git_status)
+  #if has space in reture value
+  #local _status="$(bureau_git_status)"
   local _result=""
   if [[ "${_branch}x" != "x" ]]; then
     _result="$ZSH_THEME_GIT_PROMPT_PREFIX$_branch"
