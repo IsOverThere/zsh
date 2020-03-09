@@ -159,19 +159,26 @@ bureau_git_status() {
 
   echo $_STATUS
 }
-
+ZSH_THEME_GIT_PROMPT=yes
 bureau_git_prompt () {
-  local _branch=$(bureau_git_branch)
-  local _status=$(bureau_git_status)
-  #if has space in reture value
-  #local _status="$(bureau_git_status)"
-  local _result=""
-  if [[ "${_branch}x" != "x" ]]; then
-    _result="$ZSH_THEME_GIT_PROMPT_PREFIX$_branch"
-    if [[ "${_status}x" != "x" ]]; then
-      _result="$_result $_status"
-    fi
-    _result="$_result$ZSH_THEME_GIT_PROMPT_SUFFIX"
+  #local _pwd=$(command pwd)
+  #if [ "${_pwd}" =~ "xxx" ]; then
+  if [ "${ZSH_THEME_GIT_PROMPT}"x == "no"x ]; then
+      #_result="( %{$FG[123]%}%{$reset_color%})"
+      _result=""
+  else
+      local _branch=$(bureau_git_branch)
+      local _status=$(bureau_git_status)
+      #if has space in reture value
+      #local _status="$(bureau_git_status)"
+      local _result=""
+      if [[ "${_branch}x" != "x" ]]; then
+        _result="$ZSH_THEME_GIT_PROMPT_PREFIX$_branch"
+        if [[ "${_status}x" != "x" ]]; then
+          _result="$_result $_status"
+        fi
+        _result="$_result$ZSH_THEME_GIT_PROMPT_SUFFIX"
+      fi
   fi
   echo $_result
 }
