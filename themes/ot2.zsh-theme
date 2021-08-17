@@ -193,7 +193,7 @@ bureau_git_prompt () {
 
 
 cmd_print_host() {
-    if [ $HOST = "ubuntuvmwarezhangcl" ]
+    if [ $HOST = "zhangcl-Latitude-E5440" ] || [ $HOST = "ubuntuvmwarezhangcl" ]
     then
         system_icon=""
     elif [ $HOST = "zhangcl-OptiPlex-7010" ]
