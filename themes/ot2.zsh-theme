@@ -98,7 +98,7 @@ preexec() {
 #
 
 #  ●                      
-if [ $(echo $SSH_CLIENT | awk '{print $1}') = "10.11.55.99" ]; then
+if [ $(echo $SSH_CLIENT | awk '{print $1}') = "10.11.55.99" ]||[ "${HOST}" = "zhangcl-neon" ]; then
     #local DIRTY_STRING=""
     ZSH_THEME_GIT_PROMPT_PREFIX="( "
     ZSH_THEME_GIT_PROMPT_SUFFIX=")"
@@ -213,10 +213,10 @@ bureau_git_prompt () {
 #}
 
 
-if [ $(echo $SSH_CLIENT | awk '{print $1}') = "10.11.55.99" ]; then
+if [ $(echo $SSH_CLIENT | awk '{print $1}') = "10.11.55.99" ]||[ "${HOST}" = "zhangcl-neon" ]; then
     if [ "${HOST}" = "zhangcl-Latitude-E5440" ] || [ "${HOST}" = "ubuntuvmwarezhangcl" ]; then
         system_icon="💻"
-    elif [ "${HOST}" = "zhangcl-OptiPlex-7010" ]; then
+    elif [ "${HOST}" = "zhangcl-OptiPlex-7010" ] || [ "${HOST}" = "zhangcl-neon" ]; then
         system_icon="🖥️"
     else
         system_icon="🗄️"
@@ -224,7 +224,7 @@ if [ $(echo $SSH_CLIENT | awk '{print $1}') = "10.11.55.99" ]; then
 else
     if [ "${HOST}" = "zhangcl-Latitude-E5440" ] || [ "${HOST}" = "ubuntuvmwarezhangcl" ]; then
         system_icon=""
-    elif [ "${HOST}" = "zhangcl-OptiPlex-7010" ] || [ "${HOST}" = "hangcl-neon" ]; then
+    elif [ "${HOST}" = "zhangcl-OptiPlex-7010" ] || [ "${HOST}" = "zhangcl-neon" ]; then
         system_icon="ﲾ"
     else
         system_icon=""
