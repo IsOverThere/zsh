@@ -44,6 +44,7 @@ setopt prompt_subst
 
 # Displays the exec time of the last command if set threshold was exceeded
 #
+
 cmd_exec_time() {
     local stop=`date +%s`
     local start=${cmd_timestamp:-$stop}
@@ -62,7 +63,7 @@ cmd_exec_time() {
         #elapsed_format=$elapsed_format$(($elapsed%60))"s"
         #echo " ${elapsed_format}"
     #fi
-    if [ $elapsed -gt 5 ]
+    if [ $elapsed -gt 3 ]
     then
         local elapsed_format=""
         if (($elapsed/3600 != 0)); then
@@ -75,7 +76,7 @@ cmd_exec_time() {
             elapsed_format=$elapsed_format$(($elapsed%60))"s"
         fi
         #echo "羽${elapsed_format}"
-        echo "羽${elapsed_format}"
+        echo "${hourglass}${elapsed_format}"
     fi
 }
 
@@ -97,17 +98,37 @@ preexec() {
 #
 
 #  ●                      
-local DIRTY_STRING=""
-ZSH_THEME_GIT_PROMPT_PREFIX="( "
-ZSH_THEME_GIT_PROMPT_SUFFIX=")"
-ZSH_THEME_GIT_PROMPT_CLEAN=""
-ZSH_THEME_GIT_PROMPT_AHEAD="%{$FG[039]%}%{$reset_color%}"
-ZSH_THEME_GIT_PROMPT_BEHIND="%{$FG[165]%}%{$reset_color%}"
-ZSH_THEME_GIT_PROMPT_STAGED="%{$FG[040]%}${DIRTY_STRING}%{$reset_color%}"
-ZSH_THEME_GIT_PROMPT_UNSTAGED_ONLY="%{$FG[226]%}⚡%{$reset_color%}"
-ZSH_THEME_GIT_PROMPT_UNSTAGED="%{$FG[226]%}${DIRTY_STRING}%{$reset_color%}"
-ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$FG[160]%}${DIRTY_STRING}%{$reset_color%}"
-local FLAGS='--ignore-submodules=dirty'
+if [ $(echo $SSH_CLIENT | awk '{print $1}') = "10.11.55.99" ]; then
+    #local DIRTY_STRING=""
+    ZSH_THEME_GIT_PROMPT_PREFIX="( "
+    ZSH_THEME_GIT_PROMPT_SUFFIX=")"
+    ZSH_THEME_GIT_PROMPT_CLEAN=""
+    #ZSH_THEME_GIT_PROMPT_AHEAD="🔺"
+    #ZSH_THEME_GIT_PROMPT_BEHIND="🔻"
+    ZSH_THEME_GIT_PROMPT_AHEAD="🔼 "
+    ZSH_THEME_GIT_PROMPT_BEHIND="🔽 "
+    ZSH_THEME_GIT_PROMPT_STAGED="🔨"
+    ZSH_THEME_GIT_PROMPT_UNSTAGED_ONLY="🍑"
+    ZSH_THEME_GIT_PROMPT_UNSTAGED="🔧"
+    ZSH_THEME_GIT_PROMPT_UNTRACKED="🛠️ "
+    local FLAGS='--ignore-submodules=dirty'
+
+    hourglass="⏳"
+else
+    local DIRTY_STRING=""
+    ZSH_THEME_GIT_PROMPT_PREFIX="( "
+    ZSH_THEME_GIT_PROMPT_SUFFIX=")"
+    ZSH_THEME_GIT_PROMPT_CLEAN=""
+    ZSH_THEME_GIT_PROMPT_AHEAD="%{$FG[039]%}%{$reset_color%}"
+    ZSH_THEME_GIT_PROMPT_BEHIND="%{$FG[165]%}%{$reset_color%}"
+    ZSH_THEME_GIT_PROMPT_STAGED="%{$FG[040]%}${DIRTY_STRING}%{$reset_color%}"
+    ZSH_THEME_GIT_PROMPT_UNSTAGED_ONLY="%{$FG[226]%}⚡%{$reset_color%}"
+    ZSH_THEME_GIT_PROMPT_UNSTAGED="%{$FG[226]%}${DIRTY_STRING}%{$reset_color%}"
+    ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$FG[160]%}${DIRTY_STRING}%{$reset_color%}"
+    local FLAGS='--ignore-submodules=dirty'
+
+    hourglass="羽"
+fi
 
 bureau_git_branch () {
   ref=$(git symbolic-ref HEAD 2> /dev/null) || \
@@ -192,16 +213,24 @@ bureau_git_prompt () {
 #}
 
 
-cmd_print_host() {
-    if [ $HOST = "zhangcl-Latitude-E5440" ] || [ $HOST = "ubuntuvmwarezhangcl" ]
-    then
+if [ $(echo $SSH_CLIENT | awk '{print $1}') = "10.11.55.99" ]; then
+    if [ "${HOST}" = "zhangcl-Latitude-E5440" ] || [ "${HOST}" = "ubuntuvmwarezhangcl" ]; then
+        system_icon="💻"
+    elif [ "${HOST}" = "zhangcl-OptiPlex-7010" ]; then
+        system_icon="🖥️"
+    else
+        system_icon="🗄️"
+    fi
+else
+    if [ "${HOST}" = "zhangcl-Latitude-E5440" ] || [ "${HOST}" = "ubuntuvmwarezhangcl" ]; then
         system_icon=""
-    elif [ $HOST = "zhangcl-OptiPlex-7010" ]
-    then
+    elif [ "${HOST}" = "zhangcl-OptiPlex-7010" ] || [ "${HOST}" = "hangcl-neon" ]; then
         system_icon="ﲾ"
     else
         system_icon=""
     fi
+fi
+cmd_print_host() {
     echo "$system_icon"
 }
 
