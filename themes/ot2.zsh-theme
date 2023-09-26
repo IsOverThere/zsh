@@ -49,22 +49,7 @@ cmd_exec_time() {
     local stop=`date +%s`
     local start=${cmd_timestamp:-$stop}
     let local elapsed=$stop-$start
-    #    [ $elapsed -gt 5 ] && echo  ${elapsed}s
-    #if [ $elapsed -gt 5 ]
-    #then
-        #local elapsed_format=""
-        #if (($elapsed/3600 != 0)); then
-            #elapsed_format=$(($elapsed/3600))"h"$(($elapsed%3600/60))"m"
-        #else
-            #if (($elapsed/60 != 0)); then
-                #elapsed_format=$(($elapsed/60))"m"
-            #fi
-        #fi
-        #elapsed_format=$elapsed_format$(($elapsed%60))"s"
-        #echo " ${elapsed_format}"
-    #fi
-    if [ $elapsed -gt 3 ]
-    then
+    if [ $elapsed -gt 3 ]; then
         local elapsed_format=""
         if (($elapsed/3600 != 0)); then
             elapsed_format=$(($elapsed/3600))"h"
@@ -76,7 +61,7 @@ cmd_exec_time() {
             elapsed_format=$elapsed_format$(($elapsed%60))"s"
         fi
         #echo "羽${elapsed_format}"
-        echo "${hourglass}${elapsed_format}"
+        echo "  ${icon_hourglass}${elapsed_format}"
     fi
 }
 
@@ -98,22 +83,28 @@ preexec() {
 #
 
 #  ●                      
-if [ $(echo $SSH_CLIENT | awk '{print $1}') = "10.11.55.99" ]||[ "${HOST}" = "zhangcl-neon" ]; then
+if [ "$(echo $SSH_CLIENT | awk '{print $1}')" = "10.11.55.99" ] || [ "${HOST}" = "zhangcl-neon" ]; then
     #local DIRTY_STRING=""
     ZSH_THEME_GIT_PROMPT_PREFIX="( "
     ZSH_THEME_GIT_PROMPT_SUFFIX=")"
     ZSH_THEME_GIT_PROMPT_CLEAN=""
+    ZSH_THEME_GIT_PROMPT_AHEAD="🔝"
+    ZSH_THEME_GIT_PROMPT_BEHIND="🔙"
+    #ZSH_THEME_GIT_PROMPT_AHEAD="⏫"
+    #ZSH_THEME_GIT_PROMPT_BEHIND="⏬"
     #ZSH_THEME_GIT_PROMPT_AHEAD="🔺"
     #ZSH_THEME_GIT_PROMPT_BEHIND="🔻"
-    ZSH_THEME_GIT_PROMPT_AHEAD="🔼 "
-    ZSH_THEME_GIT_PROMPT_BEHIND="🔽 "
+    #ZSH_THEME_GIT_PROMPT_AHEAD="🔼 "
+    #ZSH_THEME_GIT_PROMPT_BEHIND="🔽 "
     ZSH_THEME_GIT_PROMPT_STAGED="🔨"
     ZSH_THEME_GIT_PROMPT_UNSTAGED_ONLY="🍑"
     ZSH_THEME_GIT_PROMPT_UNSTAGED="🔧"
     ZSH_THEME_GIT_PROMPT_UNTRACKED="🛠️ "
-    local FLAGS='--ignore-submodules=dirty'
+    ZSH_THEME_GIT_PROMPT_UNMERGED="⛏️ "
 
-    hourglass="⏳"
+    icon_hourglass="⏳"
+    icon_prompts_ko="⛔"
+    icon_date="📆 "
 else
     local DIRTY_STRING=""
     ZSH_THEME_GIT_PROMPT_PREFIX="( "
@@ -125,10 +116,14 @@ else
     ZSH_THEME_GIT_PROMPT_UNSTAGED_ONLY="%{$FG[226]%}⚡%{$reset_color%}"
     ZSH_THEME_GIT_PROMPT_UNSTAGED="%{$FG[226]%}${DIRTY_STRING}%{$reset_color%}"
     ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$FG[160]%}${DIRTY_STRING}%{$reset_color%}"
-    local FLAGS='--ignore-submodules=dirty'
+    ZSH_THEME_GIT_PROMPT_UNMERGED="%{$FG[039]%}${DIRTY_STRING}%{$reset_color%}"
 
-    hourglass="羽"
+    icon_hourglass="羽"
+    icon_prompts_ko="⚠️ "
+    icon_date=""
 fi
+
+local FLAGS='--ignore-submodules=dirty'
 
 bureau_git_branch () {
   ref=$(git symbolic-ref HEAD 2> /dev/null) || \
@@ -143,42 +138,40 @@ bureau_git_status() {
   git_index=$(git status ${FLAGS} --porcelain 2> /dev/null)
   if [ -n "$git_index" ]; then
     if $(echo "$git_index" | grep -q '^[AMRD]. '); then
-      git_status="$git_status$ZSH_THEME_GIT_PROMPT_STAGED"
+      git_status="${git_status}$ZSH_THEME_GIT_PROMPT_STAGED"
     fi
     if $(echo "$git_index" | grep -q '^.[MTD] '); then
-      git_status="$git_status$ZSH_THEME_GIT_PROMPT_UNSTAGED"
+      git_status="${git_status}$ZSH_THEME_GIT_PROMPT_UNSTAGED"
     fi
     if $(echo "$git_index" | grep -q -E '^\?\? '); then
-      git_status="$git_status$ZSH_THEME_GIT_PROMPT_UNTRACKED"
+      git_status="${git_status}$ZSH_THEME_GIT_PROMPT_UNTRACKED"
     fi
     if $(echo "$git_index" | grep -q '^UU '); then
-      git_status="$git_status$ZSH_THEME_GIT_PROMPT_UNMERGED"
+      git_status="${git_status}$ZSH_THEME_GIT_PROMPT_UNMERGED"
     fi
   else
-    git_status="$git_status$ZSH_THEME_GIT_PROMPT_CLEAN"
+    git_status="${git_status}$ZSH_THEME_GIT_PROMPT_CLEAN"
   fi
 
   # check status of local repository
   git_index=$(git status ${FLAGS} --porcelain -b 2> /dev/null)
   if $(echo "$git_index" | grep -q '^## .*ahead'); then
-    git_status="$git_status$ZSH_THEME_GIT_PROMPT_AHEAD"
+    git_status="${git_status}$ZSH_THEME_GIT_PROMPT_AHEAD"
   fi
   if $(echo "$git_index" | grep -q '^## .*behind'); then
-    git_status="$git_status$ZSH_THEME_GIT_PROMPT_BEHIND"
+    git_status="${git_status}$ZSH_THEME_GIT_PROMPT_BEHIND"
   fi
   if $(echo "$git_index" | grep -q '^## .*diverged'); then
-    git_status="$git_status$ZSH_THEME_GIT_PROMPT_DIVERGED"
+    git_status="${git_status}$ZSH_THEME_GIT_PROMPT_DIVERGED"
   fi
-
   if $(git rev-parse --verify refs/stash &> /dev/null); then
-    git_status="$git_status$ZSH_THEME_GIT_PROMPT_STASHED"
+    git_status="${git_status}$ZSH_THEME_GIT_PROMPT_STASHED"
   fi
-
   if [ "${git_status}" = "${ZSH_THEME_GIT_PROMPT_UNSTAGED}" ]; then
     git_status="$ZSH_THEME_GIT_PROMPT_UNSTAGED_ONLY"
   fi
 
-  echo $git_status
+  echo ${git_status}
 }
 ZSH_THEME_GIT_PROMPT=yes
 bureau_git_prompt () {
@@ -213,7 +206,7 @@ bureau_git_prompt () {
 #}
 
 
-if [ $(echo $SSH_CLIENT | awk '{print $1}') = "10.11.55.99" ]||[ "${HOST}" = "zhangcl-neon" ]; then
+if [ "$(echo $SSH_CLIENT | awk '{print $1}')" = "10.11.55.99" ] || [ "${HOST}" = "zhangcl-neon" ]; then
     if [ "${HOST}" = "zhangcl-Latitude-E5440" ] || [ "${HOST}" = "ubuntuvmwarezhangcl" ]; then
         system_icon="💻"
     elif [ "${HOST}" = "zhangcl-OptiPlex-7010" ] || [ "${HOST}" = "zhangcl-neon" ]; then
@@ -234,6 +227,9 @@ cmd_print_host() {
     echo "$system_icon"
 }
 
+prompts_ok="%{$FG[242]%}>%{$FG[241]%}>%{$FG[239]%}>%{$FG[238]%}>%{$FG[237]%}>%{$FG[236]%}>%f"
+prompts_ko="%{$FG[196]%}>%{$FG[202]%}>%{$FG[208]%}>%{$FG[214]%}>%{$FG[220]%}>%{$FG[226]%}>%f"
+
 # Define prompts
 #   羽  力 ﲾ    
 #PROMPT=$'%{\e[38;5;172m%} %{\e[38;5;242m%}U%{\e[38;5;241m%}B%{\e[38;5;240m%}U%{\e[38;5;239m%}N%{\e[38;5;238m%}T%{\e[38;5;237m%}U %{\e[38;5;31m%}%n%{\e[0m%}@%M: %{\e[38;5;255m%}%~%{\e[0m%} $(git_prompt_info) [%{\e[38;5;248m%}%w %*%{\e[0m%}] %{\e[38;5;200m%}$(cmd_exec_time)%{\e[0m%}
@@ -242,8 +238,10 @@ cmd_print_host() {
 #PROMPT='%{$FG[202]%}$(cmd_print_host) %{$FG[242]%}U%{$FG[241]%}B%{$FG[240]%}U%{$FG[239]%}N%{$FG[238]%}T%{$FG[237]%}U %{$FG[031]%}%n%f@%M: %{$FG[255]%}%~%f $(git_prompt_info) [%{$FG[248]%}%w %*%f] %{$FG[214]%}   $(cmd_exec_time)%f
 #%(?.%{$FG[242]%}>%{$FG[241]%}>%{$FG[239]%}>%{$FG[238]%}>%{$FG[237]%}>%{$FG[236]%}>%{$FG[235]%}>%f.%{$FG[196]%}>%{$FG[202]%}>%{$FG[208]%}>%{$FG[214]%}>%{$FG[220]%}>%{$FG[226]%}>%f'
 #for all color schemes
-PROMPT='%{$FG[034]%}$(cmd_print_host) %{$FG[242]%}U%{$FG[241]%}B%{$FG[240]%}U%{$FG[239]%}N%{$FG[238]%}T%{$FG[237]%}U %{$FG[031]%}%n%f@%M: %B%~%b $(bureau_git_prompt) [%{$FG[248]%}%w %*%f] %{$FG[214]%}   $(cmd_exec_time)%f
-%(?.%{$FG[242]%}>%{$FG[241]%}>%{$FG[239]%}>%{$FG[238]%}>%{$FG[237]%}>%{$FG[236]%}>%f.%{$FG[196]%}>%{$FG[202]%}>%{$FG[208]%}>%{$FG[214]%}>%{$FG[220]%}>%{$FG[226]%}>%f'
+#PROMPT='%{$FG[034]%}$(cmd_print_host) %{$FG[242]%}U%{$FG[241]%}B%{$FG[240]%}U%{$FG[239]%}N%{$FG[238]%}T%{$FG[237]%}U %{$FG[031]%}%n%f@%M: %B%~%b $(bureau_git_prompt) [%{$FG[248]%}%w %*%f] %{$FG[214]%}   $(cmd_exec_time)%f
+#%(?.%{$FG[242]%}>%{$FG[241]%}>%{$FG[239]%}>%{$FG[238]%}>%{$FG[237]%}>%{$FG[236]%}>%f.%{$FG[196]%}>%{$FG[202]%}>%{$FG[208]%}>%{$FG[214]%}>%{$FG[220]%}>%{$FG[226]%}>%f)'
+PROMPT='%{$FG[034]%}$(cmd_print_host) %{$FG[242]%}U%{$FG[241]%}B%{$FG[240]%}U%{$FG[239]%}N%{$FG[238]%}T%{$FG[237]%}U %{$FG[031]%}%n%f@%M: %B%~%b $(bureau_git_prompt) [${icon_date}%{$FG[248]%}%w %*%f]%(?.. %{$FG[196]%}${icon_prompts_ko}%f)%{$FG[214]%}$(cmd_exec_time)%f
+%(?.${prompts_ok}.${prompts_ko})'
 #PROMPT='%{$FG[202]%}$(cmd_print_host) %{$FG[242]%}U%{$FG[241]%}B%{$FG[240]%}U%{$FG[239]%}N%{$FG[238]%}T%{$FG[237]%}U %{$FG[031]%}%n%f@%M: %{$FG[255]%}%~%f $(git_prompt_info) [%{$FG[248]%}%w %*%f] %{$FG[214]%}   $(cmd_exec_time)%f
 #%(?.%{$FG[242]%}>%{$FG[241]%}>%{$FG[239]%}>%{$FG[238]%}>%{$FG[237]%}>%{$FG[236]%}>%{$FG[235]%}>%f.%{$FG[196]%}>%{$FG[197]%}>%{$FG[198]%}>%{$FG[199]%}>%{$FG[200]%}>%{$FG[201]%}>%f'
 #PROMPT='%{$FG[202]%}$(cmd_print_host) %{$FG[242]%}U%{$FG[241]%}B%{$FG[240]%}U%{$FG[239]%}N%{$FG[238]%}T%{$FG[237]%}U %{$FG[031]%}%n%f@%M: %{$FG[255]%}%~%f $(git_prompt_info) [%{$FG[248]%}%w %*%f] %{$FG[214]%}   $(cmd_exec_time)%f
