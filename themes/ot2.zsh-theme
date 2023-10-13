@@ -105,6 +105,7 @@ if [ "$(echo $SSH_CLIENT | awk '{print $1}')" = "10.11.55.99" ] || [ "${HOST}" =
     icon_hourglass="⏳"
     icon_prompts_ko="⛔"
     icon_date="📆 "
+    icon_ip="🌐 "
 else
     local DIRTY_STRING=""
     ZSH_THEME_GIT_PROMPT_PREFIX="( "
@@ -121,6 +122,7 @@ else
     icon_hourglass="羽"
     icon_prompts_ko="⚠️ "
     icon_date=""
+    icon_ip=""
 fi
 
 local FLAGS='--ignore-submodules=dirty'
@@ -227,6 +229,35 @@ cmd_print_host() {
     echo "$system_icon"
 }
 
+#get ip
+expected_networks=(enp0s31f6 ens192)
+av_networks=($(ls /sys/class/net))
+#echo ${expect_networks}
+#echo ${av_networks}
+for an_av_network in ${av_networks[*]}; do
+    #echo ${an_av_network}
+    for a_expected_network in ${expected_networks[*]}; do
+        #echo ">${a_expected_network}"
+        if [ "${an_av_network}" = "${a_expected_network}" ]; then
+            #echo ">>>${a_expected_network}"
+            ip=$(ifconfig ${a_expected_network} | awk '/inet / {print $2}')
+            break
+        fi
+    done
+    if [ -n "${ip}" ]; then
+        break
+    fi
+done
+#echo ${ip}
+
+show_ip ()
+{
+    if [ -n "${ip}" ]; then
+        echo "(${icon_ip}${ip})"
+    fi
+}
+
+
 prompts_ok="%{$FG[242]%}>%{$FG[241]%}>%{$FG[239]%}>%{$FG[238]%}>%{$FG[237]%}>%{$FG[236]%}>%f"
 prompts_ko="%{$FG[196]%}>%{$FG[202]%}>%{$FG[208]%}>%{$FG[214]%}>%{$FG[220]%}>%{$FG[226]%}>%f"
 
@@ -240,7 +271,7 @@ prompts_ko="%{$FG[196]%}>%{$FG[202]%}>%{$FG[208]%}>%{$FG[214]%}>%{$FG[220]%}>%{$
 #for all color schemes
 #PROMPT='%{$FG[034]%}$(cmd_print_host) %{$FG[242]%}U%{$FG[241]%}B%{$FG[240]%}U%{$FG[239]%}N%{$FG[238]%}T%{$FG[237]%}U %{$FG[031]%}%n%f@%M: %B%~%b $(bureau_git_prompt) [%{$FG[248]%}%w %*%f] %{$FG[214]%}   $(cmd_exec_time)%f
 #%(?.%{$FG[242]%}>%{$FG[241]%}>%{$FG[239]%}>%{$FG[238]%}>%{$FG[237]%}>%{$FG[236]%}>%f.%{$FG[196]%}>%{$FG[202]%}>%{$FG[208]%}>%{$FG[214]%}>%{$FG[220]%}>%{$FG[226]%}>%f)'
-PROMPT='%{$FG[034]%}$(cmd_print_host) %{$FG[242]%}U%{$FG[241]%}B%{$FG[240]%}U%{$FG[239]%}N%{$FG[238]%}T%{$FG[237]%}U %{$FG[031]%}%n%f@%M: %B%~%b $(bureau_git_prompt) [${icon_date}%{$FG[248]%}%w %*%f]%(?.. %{$FG[196]%}${icon_prompts_ko}%f)%{$FG[214]%}$(cmd_exec_time)%f
+PROMPT='%{$FG[034]%}$(cmd_print_host) %{$FG[242]%}U%{$FG[241]%}B%{$FG[240]%}U%{$FG[239]%}N%{$FG[238]%}T%{$FG[237]%}U %{$FG[031]%}%n%f@%M$(show_ip): %B%~%b $(bureau_git_prompt) [${icon_date}%{$FG[248]%}%w %*%f]%(?.. %{$FG[196]%}${icon_prompts_ko}%f)%{$FG[214]%}$(cmd_exec_time)%f
 %(?.${prompts_ok}.${prompts_ko})'
 #PROMPT='%{$FG[202]%}$(cmd_print_host) %{$FG[242]%}U%{$FG[241]%}B%{$FG[240]%}U%{$FG[239]%}N%{$FG[238]%}T%{$FG[237]%}U %{$FG[031]%}%n%f@%M: %{$FG[255]%}%~%f $(git_prompt_info) [%{$FG[248]%}%w %*%f] %{$FG[214]%}   $(cmd_exec_time)%f
 #%(?.%{$FG[242]%}>%{$FG[241]%}>%{$FG[239]%}>%{$FG[238]%}>%{$FG[237]%}>%{$FG[236]%}>%{$FG[235]%}>%f.%{$FG[196]%}>%{$FG[197]%}>%{$FG[198]%}>%{$FG[199]%}>%{$FG[200]%}>%{$FG[201]%}>%f'
