@@ -175,7 +175,9 @@ bureau_git_status() {
 
   echo ${git_status}
 }
-ZSH_THEME_GIT_PROMPT=yes
+if [ -z "${ZSH_THEME_GIT_PROMPT}" ]; then
+    ZSH_THEME_GIT_PROMPT=yes
+fi
 bureau_git_prompt () {
   #local _pwd=$(command pwd)
   #if [ "${_pwd}" =~ "xxx" ]; then
