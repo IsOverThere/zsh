@@ -137,27 +137,30 @@ bureau_git_branch () {
 bureau_git_status() {
   git_status=""
 
-  # check status of files
-  git_index=$(git status ${FLAGS} --porcelain 2> /dev/null)
-  if [ -n "$git_index" ]; then
-    if $(echo "$git_index" | grep -q '^[AMRD]. '); then
+  # Single git status call (with branch header) covers both file and
+  # ahead/behind/diverged checks; avoids a second full repo scan.
+  git_index=$(git status ${FLAGS} --porcelain -b 2> /dev/null)
+
+  # check status of files (skip the leading "## ..." branch header line)
+  local file_lines="${git_index#*$'\n'}"
+  if [ -n "$file_lines" ]; then
+    if $(echo "$file_lines" | grep -q '^[AMRD]. '); then
       git_status="${git_status}$ZSH_THEME_GIT_PROMPT_STAGED"
     fi
-    if $(echo "$git_index" | grep -q '^.[MTD] '); then
+    if $(echo "$file_lines" | grep -q '^.[MTD] '); then
       git_status="${git_status}$ZSH_THEME_GIT_PROMPT_UNSTAGED"
     fi
-    if $(echo "$git_index" | grep -q -E '^\?\? '); then
+    if $(echo "$file_lines" | grep -q -E '^\?\? '); then
       git_status="${git_status}$ZSH_THEME_GIT_PROMPT_UNTRACKED"
     fi
-    if $(echo "$git_index" | grep -q '^UU '); then
+    if $(echo "$file_lines" | grep -q '^UU '); then
       git_status="${git_status}$ZSH_THEME_GIT_PROMPT_UNMERGED"
     fi
   else
     git_status="${git_status}$ZSH_THEME_GIT_PROMPT_CLEAN"
   fi
 
-  # check status of local repository
-  git_index=$(git status ${FLAGS} --porcelain -b 2> /dev/null)
+  # check status of local repository (branch header line only)
   if $(echo "$git_index" | grep -q '^## .*ahead'); then
     git_status="${git_status}$ZSH_THEME_GIT_PROMPT_AHEAD"
   fi
@@ -167,7 +170,7 @@ bureau_git_status() {
   if $(echo "$git_index" | grep -q '^## .*diverged'); then
     git_status="${git_status}$ZSH_THEME_GIT_PROMPT_DIVERGED"
   fi
-  if $(git rev-parse --verify refs/stash &> /dev/null); then
+  if [ -f "$(git rev-parse --git-path refs/stash 2> /dev/null)" ]; then
     git_status="${git_status}$ZSH_THEME_GIT_PROMPT_STASHED"
   fi
   if [ "${git_status}" = "${ZSH_THEME_GIT_PROMPT_UNSTAGED}" ]; then
