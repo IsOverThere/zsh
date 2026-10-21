@@ -246,7 +246,7 @@ cmd_print_host() {
 }
 
 #get ip
-expected_networks=(enp0s31f6 ens192)
+expected_networks=(enp0s31f6 ens192 eno2)
 av_networks=($(ls /sys/class/net))
 #echo ${expect_networks}
 #echo ${av_networks}
