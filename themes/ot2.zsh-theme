@@ -233,7 +233,7 @@ if true; then
             ;;
         zhangclsrv01)
             system_icon="🗄️"
-            username_color="208" # orange
+            username_color="098" # purple
             ;;
         zhangclsrv02)
             system_icon="🏭"
