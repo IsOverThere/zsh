@@ -229,7 +229,7 @@ if true; then
     case "${HOST}" in
         zhangcl-neon)
             system_icon="🖥️"
-            username_color="031" # blue (as before)
+            username_color="031" # blue
             ;;
         zhangclsrv01)
             system_icon="🗄️"
@@ -237,7 +237,7 @@ if true; then
             ;;
         zhangclsrv02)
             system_icon="🏭"
-            username_color="040" # green
+            username_color="208" # orange
             ;;
         *)
             system_icon="🗄️"
