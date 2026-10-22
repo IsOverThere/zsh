@@ -225,14 +225,27 @@ bureau_git_prompt () {
 
 # if [ "$(echo $SSH_CLIENT | awk '{print $1}')" = "10.11.55.99" ] || [ "${HOST}" = "zhangcl-neon" ]; then
 if true; then
-    if [ "${HOST}" = "zhangcl-Latitude-E5440" ] || [ "${HOST}" = "ubuntuvmwarezhangcl" ]; then
-        system_icon="💻"
-    elif [ "${HOST}" = "zhangcl-OptiPlex-7010" ] || [ "${HOST}" = "zhangcl-neon" ]; then
-        system_icon="🖥️"
-    else
-        system_icon="🗄️"
-    fi
+    # system_icon: leading icon; username_color: 256-color code for the user name
+    case "${HOST}" in
+        zhangcl-neon)
+            system_icon="🖥️"
+            username_color="031" # blue (as before)
+            ;;
+        zhangclsrv01)
+            system_icon="🗄️"
+            username_color="208" # orange
+            ;;
+        zhangclsrv02)
+            system_icon="🏭"
+            username_color="040" # green
+            ;;
+        *)
+            system_icon="🗄️"
+            username_color="245" # gray
+            ;;
+    esac
 else
+    username_color="031"
     if [ "${HOST}" = "zhangcl-Latitude-E5440" ] || [ "${HOST}" = "ubuntuvmwarezhangcl" ]; then
         system_icon=""
     elif [ "${HOST}" = "zhangcl-OptiPlex-7010" ] || [ "${HOST}" = "zhangcl-neon" ]; then
@@ -285,9 +298,9 @@ prompts_ko="%{$FG[196]%}>%{$FG[202]%}>%{$FG[208]%}>%{$FG[214]%}>%{$FG[220]%}>%{$
 #PROMPT='%{$FG[202]%}$(cmd_print_host) %{$FG[242]%}U%{$FG[241]%}B%{$FG[240]%}U%{$FG[239]%}N%{$FG[238]%}T%{$FG[237]%}U %{$FG[031]%}%n%f@%M: %{$FG[255]%}%~%f $(git_prompt_info) [%{$FG[248]%}%w %*%f] %{$FG[214]%}   $(cmd_exec_time)%f
 #%(?.%{$FG[242]%}>%{$FG[241]%}>%{$FG[239]%}>%{$FG[238]%}>%{$FG[237]%}>%{$FG[236]%}>%{$FG[235]%}>%f.%{$FG[196]%}>%{$FG[202]%}>%{$FG[208]%}>%{$FG[214]%}>%{$FG[220]%}>%{$FG[226]%}>%f'
 #for all color schemes
-#PROMPT='%{$FG[034]%}$(cmd_print_host) %{$FG[242]%}U%{$FG[241]%}B%{$FG[240]%}U%{$FG[239]%}N%{$FG[238]%}T%{$FG[237]%}U %{$FG[031]%}%n%f@%M: %B%~%b $(bureau_git_prompt) [%{$FG[248]%}%w %*%f] %{$FG[214]%}   $(cmd_exec_time)%f
+#PROMPT='%{$FG[${username_color}]%}$(cmd_print_host) %{$FG[242]%}U%{$FG[241]%}B%{$FG[240]%}U%{$FG[239]%}N%{$FG[238]%}T%{$FG[237]%}U %{$FG[031]%}%n%f@%M: %B%~%b $(bureau_git_prompt) [%{$FG[248]%}%w %*%f] %{$FG[214]%}   $(cmd_exec_time)%f
 #%(?.%{$FG[242]%}>%{$FG[241]%}>%{$FG[239]%}>%{$FG[238]%}>%{$FG[237]%}>%{$FG[236]%}>%f.%{$FG[196]%}>%{$FG[202]%}>%{$FG[208]%}>%{$FG[214]%}>%{$FG[220]%}>%{$FG[226]%}>%f)'
-PROMPT='%{$FG[034]%}$(cmd_print_host) %{$FG[242]%}U%{$FG[241]%}B%{$FG[240]%}U%{$FG[239]%}N%{$FG[238]%}T%{$FG[237]%}U %{$FG[031]%}%n%f@%M$(show_ip): %B%~%b $(bureau_git_prompt) [${icon_date}%{$FG[248]%}%w %*%f]%(?.. %{$FG[196]%}${icon_prompts_ko}%f)%{$FG[214]%}$(cmd_exec_time)%f
+PROMPT='%{$FG[${username_color}]%}$(cmd_print_host) %{$FG[242]%}U%{$FG[241]%}B%{$FG[240]%}U%{$FG[239]%}N%{$FG[238]%}T%{$FG[237]%}U %{$FG[${username_color}]%}%n%f@%M$(show_ip): %B%~%b $(bureau_git_prompt) [${icon_date}%{$FG[248]%}%w %*%f]%(?.. %{$FG[196]%}${icon_prompts_ko}%f)%{$FG[214]%}$(cmd_exec_time)%f
 %(?.${prompts_ok}.${prompts_ko})'
 #PROMPT='%{$FG[202]%}$(cmd_print_host) %{$FG[242]%}U%{$FG[241]%}B%{$FG[240]%}U%{$FG[239]%}N%{$FG[238]%}T%{$FG[237]%}U %{$FG[031]%}%n%f@%M: %{$FG[255]%}%~%f $(git_prompt_info) [%{$FG[248]%}%w %*%f] %{$FG[214]%}   $(cmd_exec_time)%f
 #%(?.%{$FG[242]%}>%{$FG[241]%}>%{$FG[239]%}>%{$FG[238]%}>%{$FG[237]%}>%{$FG[236]%}>%{$FG[235]%}>%f.%{$FG[196]%}>%{$FG[197]%}>%{$FG[198]%}>%{$FG[199]%}>%{$FG[200]%}>%{$FG[201]%}>%f'
