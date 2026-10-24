@@ -69,6 +69,51 @@ cmd_exec_time() {
 #
 preexec() {
     cmd_timestamp=`date +%s`
+    terminal_title_status "$1"
+}
+
+precmd() {
+    terminal_title_status
+}
+
+# Set the title to <emoji><project>, only under /data/Projects or ${HOME}/Projects
+# (project is the directory right after it). $1: start -> 🔨, done -> ✅, else no emoji
+#
+terminal_title_print() {
+    local root emoji
+    case $1 in
+        start) emoji=🔨 ;;
+        done)  emoji=✅ ;;
+        *)     emoji= ;;
+    esac
+    case ${PWD} in
+        /data/Projects/*) root=/data/Projects ;;
+        "${HOME}"/Projects/*) root=${HOME}/Projects ;;
+        *) return ;;
+    esac
+    print -n -- "\e]2;${emoji}${${PWD#${root}/}%%/*}\a"
+}
+
+# Called from both hooks, set ZSH_THEME_AUTO_TITLE=no to disable
+#
+terminal_title_status() {
+    [ "${ZSH_THEME_AUTO_TITLE}" = no ] && return
+    if [ -n "$1" ]; then
+        # preexec: $1 is the command line. ${PWD} is still the old one (a cd has not
+        # happened yet), so only mark tracked commands and leave the title alone otherwise.
+        case $1 in
+            *sleep*|*make*|*bld_ipq*) tab_title_active=1; terminal_title_print start ;;
+        esac
+    else
+        # precmd: the command is done and ${PWD} is up to date; precmd has no command
+        # line, so tab_title_active (set by preexec) tells if it was a tracked one.
+        if [ -n "${tab_title_active}" ]; then
+            terminal_title_print done
+        else
+            terminal_title_print
+        fi
+        tab_title_active=
+    fi
 }
 
 #from ~/.zsh/oh-my-zsh/themes/bureau.zsh-theme
