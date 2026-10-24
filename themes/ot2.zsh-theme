@@ -293,6 +293,7 @@ if true; then
             username_color="245" # gray
             ;;
     esac
+    prompt_username="%{$FG[${username_color}]%}%n%f" #blue
 else
     username_color="031"
     if [ "${HOST}" = "zhangcl-Latitude-E5440" ] || [ "${HOST}" = "ubuntuvmwarezhangcl" ]; then
@@ -336,6 +337,7 @@ show_ip ()
 }
 
 
+ubuntu="%{$FG[242]%}U%{$FG[241]%}B%{$FG[240]%}U%{$FG[239]%}N%{$FG[238]%}T%{$FG[237]%}U"
 prompts_ok="%{$FG[242]%}>%{$FG[241]%}>%{$FG[239]%}>%{$FG[238]%}>%{$FG[237]%}>%{$FG[236]%}>%f"
 prompts_ko="%{$FG[196]%}>%{$FG[202]%}>%{$FG[208]%}>%{$FG[214]%}>%{$FG[220]%}>%{$FG[226]%}>%f"
 
@@ -349,8 +351,8 @@ prompts_ko="%{$FG[196]%}>%{$FG[202]%}>%{$FG[208]%}>%{$FG[214]%}>%{$FG[220]%}>%{$
 #for all color schemes
 #PROMPT='%{$FG[${username_color}]%}$(cmd_print_host) %{$FG[242]%}U%{$FG[241]%}B%{$FG[240]%}U%{$FG[239]%}N%{$FG[238]%}T%{$FG[237]%}U %{$FG[031]%}%n%f@%M: %B%~%b $(bureau_git_prompt) [%{$FG[248]%}%w %*%f] %{$FG[214]%}   $(cmd_exec_time)%f
 #%(?.%{$FG[242]%}>%{$FG[241]%}>%{$FG[239]%}>%{$FG[238]%}>%{$FG[237]%}>%{$FG[236]%}>%f.%{$FG[196]%}>%{$FG[202]%}>%{$FG[208]%}>%{$FG[214]%}>%{$FG[220]%}>%{$FG[226]%}>%f)'
-PROMPT='%{$FG[${username_color}]%}$(cmd_print_host) %{$FG[242]%}U%{$FG[241]%}B%{$FG[240]%}U%{$FG[239]%}N%{$FG[238]%}T%{$FG[237]%}U %{$FG[${username_color}]%}%n%f@%M$(show_ip): %B%~%b $(bureau_git_prompt) [${icon_date}%{$FG[248]%}%w %*%f]%(?.. %{$FG[196]%}${icon_prompts_ko}%f)%{$FG[214]%}$(cmd_exec_time)%f
-%(?.${prompts_ok}.${prompts_ko})'
+#PROMPT='%{$FG[${username_color}]%}$(cmd_print_host) %{$FG[242]%}U%{$FG[241]%}B%{$FG[240]%}U%{$FG[239]%}N%{$FG[238]%}T%{$FG[237]%}U %{$FG[${username_color}]%}%n%f@%M$(show_ip): %B%~%b $(bureau_git_prompt) [${icon_date}%{$FG[248]%}%w %*%f]%(?.. %{$FG[196]%}${icon_prompts_ko}%f)%{$FG[214]%}$(cmd_exec_time)%f
+#%(?.${prompts_ok}.${prompts_ko})'
 #PROMPT='%{$FG[202]%}$(cmd_print_host) %{$FG[242]%}U%{$FG[241]%}B%{$FG[240]%}U%{$FG[239]%}N%{$FG[238]%}T%{$FG[237]%}U %{$FG[031]%}%n%f@%M: %{$FG[255]%}%~%f $(git_prompt_info) [%{$FG[248]%}%w %*%f] %{$FG[214]%}   $(cmd_exec_time)%f
 #%(?.%{$FG[242]%}>%{$FG[241]%}>%{$FG[239]%}>%{$FG[238]%}>%{$FG[237]%}>%{$FG[236]%}>%{$FG[235]%}>%f.%{$FG[196]%}>%{$FG[197]%}>%{$FG[198]%}>%{$FG[199]%}>%{$FG[200]%}>%{$FG[201]%}>%f'
 #PROMPT='%{$FG[202]%}$(cmd_print_host) %{$FG[242]%}U%{$FG[241]%}B%{$FG[240]%}U%{$FG[239]%}N%{$FG[238]%}T%{$FG[237]%}U %{$FG[031]%}%n%f@%M: %{$FG[255]%}%~%f $(git_prompt_info) [%{$FG[248]%}%w %*%f] %{$FG[214]%}   $(cmd_exec_time)%f
@@ -359,6 +361,20 @@ PROMPT='%{$FG[${username_color}]%}$(cmd_print_host) %{$FG[242]%}U%{$FG[241]%}B%{
 #%(?.%{$FG[242]%}>%{$FG[241]%}>%{$FG[239]%}>%{$FG[238]%}>%{$FG[237]%}>%{$FG[236]%}>%{$FG[235]%}>%f.%{$FG[196]%}>%{$FG[197]%}>%{$FG[198]%}>%{$FG[199]%}>%{$FG[200]%}>%{$FG[201]%}>%f'
 #PROMPT="%(?.%F{magenta}.%F{red})❯%f " # Display a red prompt char on failure
 #RPROMPT="%F{8}${SSH_TTY:+%n@%m}%f"    # Display username if connected via SSH
+#
+# now
+PROMPT='${system_icon} '                           # system icon
+PROMPT+='${ubuntu} '                               # ubuntu icon
+PROMPT+='${prompt_username}'                       # username
+PROMPT+='@%M'                                      # @host
+PROMPT+='$(show_ip): '                             # ip
+PROMPT+='%B%~%b '                                  # current dir (bold)
+PROMPT+='$(bureau_git_prompt) '                    # git info
+PROMPT+='[${icon_date}%{$FG[248]%}%w %*%f]'        # [date icon, weekday day, time]
+PROMPT+='%(?.. %{$FG[196]%}${icon_prompts_ko}%f)'  # failure icon, only if last cmd failed
+PROMPT+='%{$FG[214]%}$(cmd_exec_time)%f'           # command execution time
+PROMPT+=$'\n'                                      # line break
+PROMPT+='%(?.${prompts_ok}.${prompts_ko})'         # prompt char: ok / ko
 
 # ------------------------------------------------------------------------------
 #
